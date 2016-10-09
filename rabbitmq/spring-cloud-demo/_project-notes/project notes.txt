@@ -1,0 +1,149 @@
+Cloning this Project
+=======================
+git clone --recursive git@github.com:garystafford/spring-cloud-demo.git # me
+git clone --recursive https://github.com/garystafford/spring-cloud-demo.git # everyone else
+
+
+Project URLs
+=======================
+Reservation Service:   http://localhost:8000/reservations # 8001, 8002, etc.
+                       http://localhost:8000/reservations/search/by-name?rn=Amit
+
+                       http://192.168.99.1:8000/configprops
+
+Reservation Client:    http://localhost:8050/reservation-service/reservations
+                       http://localhost:8050/reservations/names
+                       http://localhost:8050/reservations # POST
+                       http://localhost:8050/reservations/service-message # client-message
+                       http://localhost:8050/reservations/client-message
+
+Eureka Server:         http://localhost:8761
+
+Spring Cloud Config:   http://localhost:8888/reservation-service/master
+
+Hystrix Dashboard:     http://localhost:8050/hystrix.stream
+                       http://localhost:8010/hystrix.html
+
+
+Zipkin:                http://192.168.99.100:8080/
+
+
+Start-up Order
+=======================
+docker-redis
+docker-zipkin
+config-server
+eureka-service
+hystrix-dashboard
+reservation-service
+reservation-client
+
+
+Config Repo
+=======================
+git submodule add git@github.com:garystafford/spring-cloud-demo-config-repo.git
+git submodule init
+git submodule update
+java.lang.IllegalStateException: No .git directory at file:/Users/gstaffo/Documents/projects/spring-cloud-demo/spring-cloud-demo-config-repo
+
+Submodule won't work here! Must be separate repo with .git folder not submodule .git file - Really! WTH!
+
+
+Redis
+=======================
+Spring Cloud Stream Redis: https://github.com/garystafford/spring-cloud-demo-config-repo.git
+
+mkdir redis-config-server
+
+cd redis-config-server
+docker-compose up
+
+running at 192.168.99.100:6379
+set spring.redis.host=192.168.99.100
+
+docker exec -it redisconfigserver_redis_1 /bin/bash
+redis-cli
+MONITOR
+
+KEYS *
+  1) "queue.output"
+LRANGE queue.output 0 -1
+  1) "\xff\x01\x0bcontentType\x00\x00\x00\x0c\"text/plain\"Bah"
+  2) "\xff\x01\x0bcontentType\x00\x00\x00\x0c\"text/plain\"Foo"
+  3) "\xff\x01\x0bcontentType\x00\x00\x00\x0c\"text/plain\"Gary"
+
+
+Zipkin
+=======================
+https://github.com/openzipkin/docker-zipkin
+
+git submodule add https://github.com/openzipkin/docker-zipkin.git
+git submodule init
+git submodule update
+
+cd docker-zipkin
+docker-compose up
+
+git submodule update --remote docker-zipkin
+
+Start-up Commands
+=======================
+export PROJECT_HOME=/Users/gstaffo/Documents/projects
+
+# Spotlight Search: Docker Quickstart Terminal
+cd ${PROJECT_HOME}/spring-cloud-demo/redis-config-server/
+docker-compose up
+
+# Spotlight Search: Docker Quickstart Terminal
+cd ${PROJECT_HOME}/spring-cloud-demo/docker-zipkin/
+docker-compose up
+
+cd ${PROJECT_HOME}/spring-cloud-demo/h2-server
+# java -cp h2*.jar org.h2.tools.Server -?
+java -cp h2*.jar org.h2.tools.Server -webPort 8506
+
+cd ${PROJECT_HOME}/spring-cloud-demo/config-server
+mvn clean package spring-boot:run
+
+cd ${PROJECT_HOME}/spring-cloud-demo/eureka-server
+mvn clean package spring-boot:run
+
+cd ${PROJECT_HOME}/spring-cloud-demo/hystrix-dashboard
+mvn clean package spring-boot:run
+
+cd ${PROJECT_HOME}/spring-cloud-demo/reservation-service
+mvn clean package
+mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8000'
+
+cd ${PROJECT_HOME}/spring-cloud-demo/reservation-service
+mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8001'
+
+cd ${PROJECT_HOME}/spring-cloud-demo/reservation-service
+mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8002'
+
+cd ${PROJECT_HOME}/spring-cloud-demo/reservation-client
+mvn clean package spring-boot:run
+
+
+Links
+====================
+http://stackoverflow.com/questions/13708738/how-to-get-a-command-line-property-to-overwrite-a-maven-property
+
+http://docs.spring.io/spring-boot/docs/current/reference/html/howto-properties-and-configuration.html#howto-use-short-command-line-arguments
+
+https://github.com/joakim666/spring-boot-spring-loaded-java8-example/blob/master/pom.xml
+
+http://plainoldobjects.com/2014/04/01/building-microservices-with-spring-boot-part1/
+com.example.ReservationServiceApplication
+
+https://spring.io/blog/2015/01/13/configuring-it-all-out-or-12-factor-app-style-configuration-with-spring
+
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+
+** https://spring.io/blog/2015/01/20/microservice-registration-and-discovery-with-spring-cloud-and-netflix-s-eureka
+
+h2:
+http://www.mkyong.com/spring/spring-embedded-database-examples/
+http://www.h2database.com/html/cheatSheet.html
+
+http://ufasoli.blogspot.com/2014/02/spring-boot-and-spring-data-jpa_6.html

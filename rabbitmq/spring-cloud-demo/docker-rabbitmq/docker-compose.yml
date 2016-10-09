@@ -1,0 +1,7 @@
+rabbitmq: # https://registry.hub.docker.com/_/rabbitmq/
+#  image: rabbitmq:3
+  image: "rabbitmq:management"
+  hostname: rabbitmq
+  ports:
+    - "5672:5672"
+    - "15672:15672"
