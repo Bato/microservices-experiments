@@ -1,14 +1,11 @@
 package com.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
-
-import static org.springframework.cloud.stream.messaging.Sink.INPUT;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @MessageEndpoint
 class ReservationProcessor {
@@ -23,8 +20,10 @@ class ReservationProcessor {
 		this.reservationRepository = reservationRepository;
 	}
 	
-    @ServiceActivator(inputChannel = INPUT)
+	
+    @ServiceActivator(inputChannel = "input")
 	public void acceptNewReservations(Message<String> msg) {
+    	
 		String rn = msg.getPayload();
 		
     	LOGGER.info("+++IN-> ReservationProcessor.acceptNewReservation()");

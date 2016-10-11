@@ -5,11 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Description;
 
-@EnableBinding(Sink.class)
+@EnableBinding(ReservationServiceChannels.class)
 @EnableEurekaClient
 @SpringBootApplication
 public class ReservationServiceApplication {
